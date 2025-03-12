@@ -82,7 +82,11 @@ public class Mesh {
             int dy = position.y + direction.getY();
             int dz = position.z + direction.getZ();
 
-            if (chunk.isBlockActive(dx, dy, dz)) {
+            if (chunk.isOutOfBounds(dx, dy, dz)) {
+                if (block.getBlockType() == BlockType.WATER) {
+                    block.setFaceStatus(direction, false);
+                }
+            } else if (chunk.isBlockActive(dx, dy, dz)) {
                 Block adjacentBlock = chunk.getBlock(dx, dy, dz);
 
                 if (this.canCullFace(block, adjacentBlock)) {

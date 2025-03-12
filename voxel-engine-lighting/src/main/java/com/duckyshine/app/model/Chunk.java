@@ -205,6 +205,14 @@ public class Chunk {
         }
     }
 
+    // public boolean isBlockOnBorder(Block block) {
+    // Vector3i position = block.getPosition();
+
+    // return position
+
+    // return false;
+    // }
+
     public void update() {
         this.mesh.update(this);
     }
@@ -226,9 +234,7 @@ public class Chunk {
     }
 
     public boolean isBlockActive(int x, int y, int z) {
-        Vector3i position = new Vector3i(x, y, z);
-
-        if (!Range.isInRange3D(position, this.WIDTH, this.HEIGHT, this.DEPTH)) {
+        if (this.isOutOfBounds(x, y, z)) {
             return false;
         }
 
@@ -294,6 +300,12 @@ public class Chunk {
 
     public int getDepth() {
         return this.DEPTH;
+    }
+
+    public boolean isOutOfBounds(int x, int y, int z) {
+        Vector3i position = new Vector3i(x, y, z);
+
+        return !Range.isInRange3D(position, this.WIDTH, this.HEIGHT, this.DEPTH);
     }
 
     public Vector3f getCentre() {
