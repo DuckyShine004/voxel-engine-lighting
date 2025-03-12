@@ -2,10 +2,11 @@
 
 in vec2 outTextureCoordinate;
 
-in vec3 outNormal;
 in vec3 outVertexPosition;
 
 in vec4 outVertexColour;
+
+in vec3 outNormal;
 
 out vec4 fragmentColour;
 
@@ -22,7 +23,7 @@ uniform sampler2DArray textureArray;
 float getFogFactor() {
     float fogDistance = length(outVertexPosition - cameraPosition);
 
-    return clamp((fogStart - fogDistance) / (fogEnd - fogStart), 0.0, 1.0);
+    return clamp((fogStart - fogDistance) / (fogEnd - fogStart), 0.0f, 1.0f);
 }
 
 void main() {
@@ -32,13 +33,18 @@ void main() {
         discard;
     }
 
-    // textureColour.rgb *= ambient;
-    float ambientIntensity = 0.1f;
-    vec3 ambient = ambientIntensity * vec3(1.0f, 1.0f, 1.0f);
+    float ambientIntensity = 0.5f;
+    vec3 ambient = ambientIntensity * vec3(1.0f);
 
-    vec3 litColour = ambient * textureColour.rgb;
+    vec3 lightDirection = vec3(0.8f, 1.0f, 0.7f);
+    lightDirection = normalize(-lightDirection);
 
-    vec3 finalColour = mix(fogColour, litColour, getFogFactor());
+    float diffuseIntensity = max(dot(outNormal, lightDirection), 0.0f);
+    vec3 diffuse = diffuseIntensity * vec3(1.0f);
+
+    vec3 lightColour = (ambient + diffuse) * textureColour.rgb;
+
+    vec3 finalColour = mix(fogColour, lightColour, getFogFactor());
 
     fragmentColour = vec4(finalColour, textureColour.a);
 };
