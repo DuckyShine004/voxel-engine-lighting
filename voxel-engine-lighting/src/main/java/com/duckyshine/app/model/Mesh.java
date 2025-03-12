@@ -103,7 +103,8 @@ public class Mesh {
             return false;
         }
 
-        return true;
+        // check if the adjacent block is transparent
+        return !adjacentBlock.isTransparent();
     }
 
     private int findMaximumHeight(BlockType[][] grid, int x, int y, int height) {
