@@ -30,9 +30,8 @@ public class Mesh {
     private List<Float> coordinates;
 
     private List<Integer> indices;
+    private List<Integer> normals;
     private List<Integer> textures;
-
-    private int[][] heightMap;
 
     public Mesh() {
         this.buffer = new MeshBuffer();
@@ -43,6 +42,7 @@ public class Mesh {
         this.coordinates = new ArrayList<>();
 
         this.indices = new ArrayList<>();
+        this.normals = new ArrayList<>();
         this.textures = new ArrayList<>();
     }
 
@@ -382,12 +382,13 @@ public class Mesh {
         this.sortQuads(camera);
 
         int[] indices = this.getMergedIndices();
+        int[] normals = this.getMergedNormals();
         int[] textures = this.getMergedTextures();
 
         float[] vertices = this.getMergedVertices();
         float[] coordinates = this.getMergedCoordinates();
 
-        BufferData bufferData = new BufferData(vertices, indices, coordinates, textures);
+        BufferData bufferData = new BufferData(vertices, indices, normals, coordinates, textures);
 
         this.buffer.cleanup();
 
@@ -411,7 +412,7 @@ public class Mesh {
 
         indices = new int[this.indices.size()];
 
-        for (int i = 0; i < this.indices.size(); i++) {
+        for (int i = 0; i < indices.length; i++) {
             indices[i] = this.indices.get(i);
         }
 
@@ -431,7 +432,7 @@ public class Mesh {
 
         vertices = new float[this.vertices.size()];
 
-        for (int i = 0; i < this.vertices.size(); i++) {
+        for (int i = 0; i < vertices.length; i++) {
             vertices[i] = this.vertices.get(i);
         }
 
@@ -453,7 +454,7 @@ public class Mesh {
 
         coordinates = new float[this.coordinates.size()];
 
-        for (int i = 0; i < this.coordinates.size(); i++) {
+        for (int i = 0; i < coordinates.length; i++) {
             coordinates[i] = this.coordinates.get(i);
         }
 
@@ -475,11 +476,33 @@ public class Mesh {
 
         textures = new int[this.textures.size()];
 
-        for (int i = 0; i < this.textures.size(); i++) {
+        for (int i = 0; i < textures.length; i++) {
             textures[i] = this.textures.get(i);
         }
 
         return textures;
+    }
+
+    private int[] getMergedNormals() {
+        int[] normals;
+
+        this.normals.clear();
+
+        for (Quad quad : this.quads) {
+            Direction direction = quad.getDirection();
+
+            for (int i = 0; i < 4; i++) {
+                this.normals.add(direction.getIndex());
+            }
+        }
+
+        normals = new int[this.normals.size()];
+
+        for (int i = 0; i < normals.length; i++) {
+            normals[i] = this.normals.get(i);
+        }
+
+        return normals;
     }
 
     public void cleanup() {

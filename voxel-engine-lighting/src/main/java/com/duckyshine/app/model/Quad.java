@@ -122,6 +122,10 @@ public class Quad {
         return this.position;
     }
 
+    public Direction getDirection() {
+        return this.direction;
+    }
+
     public Vector3f getCentre() {
         Vector3f sum = new Vector3f();
 

@@ -3,12 +3,14 @@ package com.duckyshine.app.buffer;
 import static org.lwjgl.opengl.GL30.*;
 
 public class MeshBuffer extends Buffer {
+    private int normalBufferId;
     private int textureBufferId;
     private int coordinateBufferId;
 
     public MeshBuffer() {
         super();
 
+        this.normalBufferId = 0;
         this.textureBufferId = 0;
         this.coordinateBufferId = 0;
     }
@@ -17,8 +19,9 @@ public class MeshBuffer extends Buffer {
     public void setup(BufferData bufferData) {
         super.setupBuffers();
 
-        this.coordinateBufferId = glGenBuffers();
+        this.normalBufferId = glGenBuffers();
         this.textureBufferId = glGenBuffers();
+        this.coordinateBufferId = glGenBuffers();
 
         this.bindVertexArray();
 
@@ -30,6 +33,9 @@ public class MeshBuffer extends Buffer {
 
         this.bindTextureBuffer(bufferData.getTextures());
         this.setIntegerVertexAttributePointer(2, 1, GL_INT, Integer.BYTES, 0);
+
+        this.bindNormalBuffer(bufferData.getNormals());
+        this.setIntegerVertexAttributePointer(3, 1, GL_INT, Integer.BYTES, 0);
 
         this.bindIndexBuffer(bufferData.getIndices());
 
@@ -51,6 +57,24 @@ public class MeshBuffer extends Buffer {
             glDeleteBuffers(this.coordinateBufferId);
 
             this.coordinateBufferId = 0;
+        }
+    }
+
+    private void bindNormalBuffer(int[] normals) {
+        this.bindIntegerBuffer(this.normalBufferId, normals, GL_ARRAY_BUFFER);
+    }
+
+    private void detachNormalBuffer() {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    private void deleteNormalBuffer() {
+        if (this.normalBufferId != 0) {
+            this.detachNormalBuffer();
+
+            glDeleteBuffers(this.normalBufferId);
+
+            this.normalBufferId = 0;
         }
     }
 
@@ -76,7 +100,8 @@ public class MeshBuffer extends Buffer {
     public void cleanup() {
         super.cleanup();
 
-        this.deleteCoordinateBuffer();
+        this.deleteNormalBuffer();
         this.deleteTextureBuffer();
+        this.deleteCoordinateBuffer();
     }
 }
