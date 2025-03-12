@@ -90,9 +90,11 @@ public class Scene {
         Vector3f position = this.player.getPosition();
         Vector3f target = this.player.getNextPosition(deltaTime);
 
-        target.x = this.getAxisCollision(position.x, target.x, Axis.X);
-        target.y = this.getAxisCollision(position.y, target.y, Axis.Y);
-        target.z = this.getAxisCollision(position.z, target.z, Axis.Z);
+        if (this.player.isGravityOn()) {
+            target.x = this.getAxisCollision(position.x, target.x, Axis.X);
+            target.y = this.getAxisCollision(position.y, target.y, Axis.Y);
+            target.z = this.getAxisCollision(position.z, target.z, Axis.Z);
+        }
 
         this.player.setPosition(target);
     }

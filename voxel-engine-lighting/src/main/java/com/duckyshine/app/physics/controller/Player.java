@@ -41,6 +41,8 @@ public class Player {
     private final float CAMERA_OFFSET_Y = 1.8f;
     private final float CAMERA_OFFSET_Z = 0.0f;
 
+    private float horizontalSpeedMultiplier = 1.0f;
+
     private boolean isGrounded;
     private boolean isGravityOn;
 
@@ -157,12 +159,18 @@ public class Player {
             velocity.sub(front);
         }
 
+        if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
+            this.horizontalSpeedMultiplier = 2.0f;
+        }
+
         if (velocity.length() != 0.0f) {
-            velocity.normalize().mul(this.SPEED);
+            velocity.normalize().mul(this.horizontalSpeedMultiplier * this.SPEED);
         }
 
         this.velocity.x = velocity.x;
         this.velocity.z = velocity.z;
+
+        this.horizontalSpeedMultiplier = 1.0f;
     }
 
     public void updateVerticalVelocity(long window, float deltaTime) {
