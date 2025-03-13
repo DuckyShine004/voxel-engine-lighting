@@ -19,7 +19,7 @@ public class Noise {
         return Noise.getNoise2d((double) x, (double) z);
     }
 
-    public static int getNoise2d(double x, double z) {
+    public static double getRawNoise2d(double x, double z) {
         double totalNoise = 0.0d;
         double totalAmplitude = 0.0d;
 
@@ -40,7 +40,19 @@ public class Noise {
 
         double normalisedNoise = totalNoise / totalAmplitude;
 
-        return (int) Math.ceil((normalisedNoise + 1.0f) * 0.5f * SCALE);
+        return (normalisedNoise + 1.0f) * 0.5f * SCALE;
+    }
+
+    public static int getNoise2d(double x, double z) {
+        return (int) Math.ceil(Noise.getRawNoise2d(x, z));
+    }
+
+    public static double getRawNoise3d(double x, double y, double z) {
+        return Noise.getSimplexNoise3d(x * 0.09, y * 0.09, z * 0.09);
+    }
+
+    public static int getNoise3d(double x, double y, double z) {
+        return (int) Math.ceil(Noise.getRawNoise3d(x, y, z));
     }
 
     // Second model
@@ -79,5 +91,13 @@ public class Noise {
     // Performance improves slightly, at the cost of worse terrain generation
     private static double getFastSimplexNoise2d(double x, double z) {
         return FastSimplexNoise.noise2(Noise.SEED, x, z);
+    }
+
+    private static double getSimplexNoise3d(double x, double y, double z) {
+        return SimplexNoise.noise3_Fallback(Noise.SEED, x, y, z);
+    }
+
+    public static long getSeed() {
+        return Noise.SEED;
     }
 }

@@ -12,6 +12,7 @@ import com.duckyshine.app.math.Range;
 import com.duckyshine.app.math.Vector3;
 import com.duckyshine.app.math.Voxel;
 import com.duckyshine.app.math.noise.Noise;
+import com.duckyshine.app.math.noise.SimplexNoise;
 import com.duckyshine.app.scene.ChunkManager;
 import com.duckyshine.app.scene.HeightMap;
 import com.duckyshine.app.camera.Camera;
@@ -198,6 +199,17 @@ public class Chunk {
                     }
 
                     if (heightDifference < -3) {
+                        double offsetX = this.position.x + x;
+                        double offsetY = this.position.y + y;
+                        double offsetZ = this.position.z + z;
+
+                        double noise2d = SimplexNoise.noise2(Noise.getSeed(), offsetX * 0.1, offsetZ * 0.1) * 3 + 3;
+                        double noise3d = Noise.getRawNoise3d(offsetX, offsetY, offsetZ);
+
+                        if (noise2d < offsetY && noise3d > 0) {
+                            continue;
+                        }
+
                         this.addBlock(x, y, z, BlockType.STONE);
                     }
                 }
