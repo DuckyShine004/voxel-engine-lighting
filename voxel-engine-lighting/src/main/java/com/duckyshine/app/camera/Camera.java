@@ -1,6 +1,5 @@
 package com.duckyshine.app.camera;
 
-import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -95,11 +94,9 @@ public class Camera {
     }
 
     public void updateMatrices() {
-        float fieldOfView = Math.toRadians(this.FIELD_OF_VIEW);
-
         this.view.identity().lookAt(this.position, Vector3.add(this.position, this.front), this.up);
 
-        this.projection.identity().perspective(fieldOfView, this.aspectRatio, this.NEAR, this.FAR);
+        this.projection.identity().perspective(this.getVFOV(), this.aspectRatio, this.NEAR, this.FAR);
 
         this.projectionView = Matrix4.mul(this.projection, this.view);
     }
@@ -122,16 +119,24 @@ public class Camera {
         this.lastMousePosition.y = floatMouseY;
 
         this.yaw += offsetX;
-        this.pitch = Math.clamp(-this.PITCH_LIMIT, this.PITCH_LIMIT, this.pitch + offsetY);
+        this.pitch += offsetY;
 
-        theta = Math.toRadians(this.yaw);
-        omega = Math.toRadians(this.pitch);
+        if (this.pitch > this.PITCH_LIMIT) {
+            this.pitch = this.PITCH_LIMIT;
+        }
+
+        if (this.pitch < -this.PITCH_LIMIT) {
+            this.pitch = -this.PITCH_LIMIT;
+        }
+
+        theta = (float) Math.toRadians(this.yaw);
+        omega = (float) Math.toRadians(this.pitch);
 
         this.direction.zero();
 
-        this.direction.x = Math.cos(theta) * Math.cos(omega);
-        this.direction.y = Math.sin(omega);
-        this.direction.z = Math.sin(theta) * Math.cos(omega);
+        this.direction.x = (float) (Math.cos(theta) * Math.cos(omega));
+        this.direction.y = (float) Math.sin(omega);
+        this.direction.z = (float) (Math.sin(theta) * Math.cos(omega));
 
         this.front = this.direction.normalize();
     }
@@ -168,6 +173,16 @@ public class Camera {
 
     public float getFOV() {
         return this.FIELD_OF_VIEW;
+    }
+
+    public float getVFOV() {
+        return (float) Math.toRadians(this.getFOV());
+    }
+
+    public float getHFOV() {
+        float VFOV = this.getVFOV();
+
+        return 2.0f * ((float) Math.atan(this.aspectRatio * Math.tan(VFOV * 0.5f)));
     }
 
     public Frustum getFrustum() {

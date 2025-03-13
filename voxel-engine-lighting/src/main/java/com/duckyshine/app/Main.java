@@ -67,6 +67,8 @@ public class Main {
         this.centreWindow();
 
         glfwMakeContextCurrent(this.window);
+
+        glfwSwapInterval(0);
     }
 
     private void initialiseCallbacks() {
