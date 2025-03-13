@@ -20,10 +20,20 @@ uniform vec3 cameraPosition;
 
 uniform sampler2DArray textureArray;
 
-float getFogFactor() {
+float getExponentialFogFactor() {
     float fogDistance = length(outVertexPosition - cameraPosition);
 
-    return clamp((fogStart - fogDistance) / (fogEnd - fogStart), 0.0f, 1.0f);
+    float fogFactor = exp2(-0.0005 * fogDistance * fogDistance);
+
+    return clamp(fogFactor, 0.0f, 1.0f);
+}
+
+float getLinearFogFactor() {
+    float fogDistance = length(outVertexPosition - cameraPosition);
+
+    float fogFactor = (fogEnd - fogDistance) / (fogEnd - fogStart);
+
+    return clamp(fogFactor, 0.0f, 1.0f);
 }
 
 void main() {
@@ -44,7 +54,7 @@ void main() {
 
     vec3 lightColour = (ambient + diffuse) * textureColour.rgb;
 
-    vec3 finalColour = mix(fogColour, lightColour, getFogFactor());
+    vec3 finalColour = mix(fogColour, lightColour, getExponentialFogFactor());
 
     fragmentColour = vec4(finalColour, textureColour.a);
 };

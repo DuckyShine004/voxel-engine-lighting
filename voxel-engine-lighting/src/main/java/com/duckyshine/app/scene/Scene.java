@@ -145,8 +145,8 @@ public class Scene {
     }
 
     public void setFog() {
-        this.shader.setFloat("fogEnd", 100.0f);
-        this.shader.setFloat("fogStart", 50.0f);
+        this.shader.setFloat("fogEnd", 50.0f);
+        this.shader.setFloat("fogStart", 20.0f);
 
         this.shader.setVector3f("fogColour", new Vector3f(0.5f, 0.7f, 1.0f));
     }
