@@ -17,12 +17,6 @@ import com.duckyshine.app.asset.AssetPool;
 import com.duckyshine.app.camera.Camera;
 
 import com.duckyshine.app.math.Axis;
-import com.duckyshine.app.math.Vector3;
-import com.duckyshine.app.math.Voxel;
-import com.duckyshine.app.model.Mesh;
-import com.duckyshine.app.model.Block;
-import com.duckyshine.app.model.BlockType;
-import com.duckyshine.app.model.Chunk;
 
 import com.duckyshine.app.shader.Shader;
 import com.duckyshine.app.shader.ShaderType;
@@ -42,7 +36,7 @@ public class Scene {
 
         this.shader = AssetPool.getShader(ShaderType.WORLD.getName());
 
-        this.chunkManager = new ChunkManager();
+        this.chunkManager = new ChunkManager(this.player.getCamera());
     }
 
     public Scene(Shader shader) {
@@ -50,7 +44,7 @@ public class Scene {
 
         this.shader = shader;
 
-        this.chunkManager = new ChunkManager();
+        this.chunkManager = new ChunkManager(this.player.getCamera());
     }
 
     public void initialise() {
@@ -157,7 +151,7 @@ public class Scene {
         this.setFog();
         this.shader.setVector3f("cameraPosition", this.getCamera().getPosition());
 
-        this.chunkManager.render(this.player.getCamera());
+        this.chunkManager.render();
 
         AABB aabb = this.player.getAABB();
 

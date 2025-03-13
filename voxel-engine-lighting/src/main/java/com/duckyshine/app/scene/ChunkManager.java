@@ -1,6 +1,7 @@
 package com.duckyshine.app.scene;
 
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.Callable;
@@ -53,14 +54,16 @@ public class ChunkManager {
 
     private Set<Vector3i> queuedChunks;
 
-    private Deque<Vector3i> loadedChunks;
+    private PriorityQueue<Vector3i> loadedChunks;
+
+    private Camera camera;
 
     // Can be changed using some sort of config or cli
     private byte cores = 8;
 
     private ExecutorService threadPool;
 
-    public ChunkManager() {
+    public ChunkManager(Camera camera) {
         this.chunks = new ConcurrentHashMap<>();
 
         this.heightMaps = new ConcurrentHashMap<>();
@@ -69,13 +72,22 @@ public class ChunkManager {
 
         this.queuedChunks = Collections.newSetFromMap(new ConcurrentHashMap<Vector3i, Boolean>());
 
-        this.loadedChunks = new ArrayDeque<>();
-
         this.threadPool = Executors.newFixedThreadPool(cores);
+
+        this.camera = camera;
     }
 
     // Dynamically generate based on player's position
     public void initialise() {
+        this.loadedChunks = new PriorityQueue<>((positionA, positionB) -> {
+            Vector3f cameraPosition = this.camera.getPosition();
+
+            float distanceA = Vector3.getDistance(Voxel.getChunkCentre(positionA), cameraPosition);
+            float distanceB = Vector3.getDistance(Voxel.getChunkCentre(positionB), cameraPosition);
+
+            return Float.compare(distanceB, distanceA);
+        });
+
         this.queueChunk(0, 0, 0);
     }
 
@@ -244,6 +256,7 @@ public class ChunkManager {
         }
     }
 
+    // TODO: implement frustum culling to process in view chunks
     public void addSurroundingChunks(Player player) {
         int renderDistance = player.getRenderDistance();
 
@@ -294,7 +307,7 @@ public class ChunkManager {
 
             this.queuedChunks.remove(chunkPosition);
 
-            this.loadedChunks.push(chunkPosition);
+            this.loadedChunks.add(chunkPosition);
 
             tasks.add(task);
 
@@ -315,8 +328,8 @@ public class ChunkManager {
 
     // Could simply change to priority queue instead of sorting in one go
     // Computationally slower for large list
-    public void render(Camera camera) {
-        List<Chunk> sortedChunks = new ArrayList<>();
+    public void render() {
+        // List<Chunk> sortedChunks = new ArrayList<>();
 
         while (!this.loadedChunks.isEmpty()) {
             Vector3i chunkPosition = this.loadedChunks.poll();
@@ -324,22 +337,22 @@ public class ChunkManager {
             if (this.isChunkActive(chunkPosition)) {
                 Chunk chunk = this.getChunk(chunkPosition);
 
-                sortedChunks.add(chunk);
+                chunk.render(this.camera);
             }
         }
 
-        Collections.sort(sortedChunks, (chunkA, chunkB) -> {
-            Vector3f cameraPosition = camera.getPosition();
+        // Collections.sort(sortedChunks, (chunkA, chunkB) -> {
+        // Vector3f cameraPosition = this.camera.getPosition();
 
-            float distanceA = Vector3.getDistance(chunkA.getCentre(), cameraPosition);
-            float distanceB = Vector3.getDistance(chunkB.getCentre(), cameraPosition);
+        // float distanceA = Vector3.getDistance(chunkA.getCentre(), cameraPosition);
+        // float distanceB = Vector3.getDistance(chunkB.getCentre(), cameraPosition);
 
-            return Float.compare(distanceB, distanceA);
-        });
+        // return Float.compare(distanceB, distanceA);
+        // });
 
-        for (Chunk chunk : sortedChunks) {
-            chunk.render(camera);
-        }
+        // for (Chunk chunk : sortedChunks) {
+        // chunk.render(this.camera);
+        // }
     }
 
     public void cleanup() {

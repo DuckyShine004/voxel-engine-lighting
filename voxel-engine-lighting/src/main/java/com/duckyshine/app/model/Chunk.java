@@ -129,7 +129,7 @@ public class Chunk {
     }
 
     public boolean canAddWater(int y, int height) {
-        return this.position.y + y > height && this.position.y + y < 10;
+        return this.position.y + y > height && this.position.y + y < 15;
     }
 
     public boolean canAddTree(int x, int y, int z, int height) {

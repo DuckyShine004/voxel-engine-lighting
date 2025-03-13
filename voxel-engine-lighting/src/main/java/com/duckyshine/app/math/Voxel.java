@@ -14,6 +14,12 @@ public class Voxel {
         return Voxel.getChunkPositionFromGlobalPosition(position);
     }
 
+    public static Vector3f getChunkCentre(Vector3i position) {
+        Vector3f dimensions = new Vector3f(Voxel.CHUNK_WIDTH, Voxel.CHUNK_HEIGHT, Voxel.CHUNK_DEPTH).div(2.0f);
+
+        return Vector3.add(new Vector3f(position), dimensions);
+    }
+
     public static Vector3i getChunkPositionFromGlobalPosition(Vector3f position) {
         int x = Math.floorDiv((int) position.x, Voxel.CHUNK_WIDTH) * Voxel.CHUNK_WIDTH;
         int y = Math.floorDiv((int) position.y, Voxel.CHUNK_HEIGHT) * Voxel.CHUNK_HEIGHT;
