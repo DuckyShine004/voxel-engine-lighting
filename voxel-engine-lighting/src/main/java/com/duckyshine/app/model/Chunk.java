@@ -188,9 +188,9 @@ public class Chunk {
                 int height = heights[z][x];
 
                 for (int y = 0; y < this.HEIGHT; y++) {
-                    if (this.isOutOfBound(y, Axis.Y)) {
-                        continue;
-                    }
+                    // if (this.isOutOfBound(y, Axis.Y)) {
+                    // continue;
+                    // }
 
                     int heightDifference = this.getHeightDifference(y, height);
 
@@ -216,14 +216,6 @@ public class Chunk {
             }
         }
     }
-
-    // public boolean isBlockOnBorder(Block block) {
-    // Vector3i position = block.getPosition();
-
-    // return position
-
-    // return false;
-    // }
 
     public void update() {
         this.mesh.update(this);

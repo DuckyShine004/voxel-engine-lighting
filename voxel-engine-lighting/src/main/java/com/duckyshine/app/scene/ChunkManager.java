@@ -310,9 +310,9 @@ public class ChunkManager {
             this.loadedChunks.add(chunkPosition);
 
             tasks.add(task);
-
-            this.waitForAllTasksToComplete(tasks);
         }
+
+        this.waitForAllTasksToComplete(tasks);
     }
 
     // Join worker threads
