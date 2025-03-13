@@ -28,9 +28,12 @@ import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
 public class Main {
+    private int frames;
+
     private long window;
 
     private float lastTime;
+    private float fpsTimer;
 
     private Scene scene;
 
@@ -112,7 +115,10 @@ public class Main {
     }
 
     private void run() {
+        this.frames = 0;
+
         this.lastTime = 0.0f;
+        this.fpsTimer = 0.0f;
 
         createCapabilities();
 
@@ -136,6 +142,16 @@ public class Main {
         float time = (float) glfwGetTime();
 
         float deltaTime = time - this.lastTime;
+
+        ++this.frames;
+
+        if (time - this.fpsTimer > 1.0f) {
+            Debug.debug(this.frames);
+
+            this.frames = 0;
+
+            this.fpsTimer = time;
+        }
 
         this.lastTime = time;
 

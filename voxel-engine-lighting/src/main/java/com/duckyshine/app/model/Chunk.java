@@ -79,6 +79,12 @@ public class Chunk {
                 if (this.isValidHeight(height)) {
                     int y = Math.floorMod(height, this.HEIGHT);
 
+                    // if (height >= 35) {
+                    // this.addBlock(x, y, z, BlockType.SNOW);
+                    // } else {
+                    // this.addBlock(x, y, z, BlockType.GRASS);
+                    // }
+
                     this.addBlock(x, y, z, BlockType.GRASS);
                 }
             }
@@ -316,5 +322,11 @@ public class Chunk {
         Vector3f dimensions = new Vector3f(this.WIDTH, this.HEIGHT, this.DEPTH).div(2.0f);
 
         return Vector3.add(new Vector3f(position), dimensions);
+    }
+
+    public float getRadius() {
+        double size = (double) this.WIDTH;
+
+        return (float) (0.5d * size * Math.sqrt(3));
     }
 }

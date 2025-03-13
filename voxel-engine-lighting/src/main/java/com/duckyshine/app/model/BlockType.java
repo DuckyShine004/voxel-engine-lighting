@@ -6,7 +6,8 @@ public enum BlockType {
     STONE(2, false),
     OAK_LOG(3, false),
     OAK_LEAVES(4, true),
-    WATER(5, true);
+    WATER(5, true),
+    SNOW(6, false);
 
     private int index;
 

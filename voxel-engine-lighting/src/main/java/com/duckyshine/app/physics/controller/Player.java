@@ -19,7 +19,7 @@ import com.duckyshine.app.debug.Debug;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Player {
-    private final int RENDER_DISTANCE = 2;
+    private final int RENDER_DISTANCE = 3;
 
     private final float SPEED = 3.0f;
     private final float VERTICAL_SPEED = 9.0f;

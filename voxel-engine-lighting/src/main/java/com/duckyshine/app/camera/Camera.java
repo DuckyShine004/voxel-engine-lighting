@@ -40,6 +40,8 @@ public class Camera {
     private Matrix4f projection;
     private Matrix4f projectionView;
 
+    private Frustum frustum;
+
     public Camera() {
         this.position = new Vector3f();
 
@@ -72,6 +74,8 @@ public class Camera {
         this.view = new Matrix4f();
         this.projection = new Matrix4f();
         this.projectionView = new Matrix4f();
+
+        this.frustum = new Frustum(this);
 
         this.initialiseAspectRatio();
     }
@@ -152,5 +156,25 @@ public class Camera {
 
     public Matrix4f getProjectionView() {
         return this.projectionView;
+    }
+
+    public float getNear() {
+        return this.NEAR;
+    }
+
+    public float getFar() {
+        return this.FAR;
+    }
+
+    public float getFOV() {
+        return this.FIELD_OF_VIEW;
+    }
+
+    public Frustum getFrustum() {
+        return this.frustum;
+    }
+
+    public float getAspectRatio() {
+        return this.aspectRatio;
     }
 }

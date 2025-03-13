@@ -35,6 +35,7 @@ import com.duckyshine.app.model.BlockType;
 import com.duckyshine.app.physics.controller.Player;
 import com.duckyshine.app.physics.ray.RayResult;
 import com.duckyshine.app.camera.Camera;
+import com.duckyshine.app.camera.Frustum;
 import com.duckyshine.app.debug.Debug;
 
 // MUST MULTITHREAD, MESH GENERATION AND NOISE IS SUPER SLOW
@@ -245,15 +246,10 @@ public class ChunkManager {
         this.chunks.put(position, chunk);
     }
 
-    public void updateChunk(Vector3i position) {
-        Chunk chunk = this.getChunk(position);
+    public void updateChunk(Chunk chunk) {
+        chunk.update();
 
-        // are we actually updating the chunk
-        if (chunk.getIsUpdate()) {
-            chunk.update();
-
-            chunk.setIsUpdate(false);
-        }
+        chunk.setIsUpdate(false);
     }
 
     // TODO: implement frustum culling to process in view chunks
@@ -300,7 +296,15 @@ public class ChunkManager {
                     if (!isChunkActive(chunkPosition)) {
                         addChunk(chunkPosition);
                     } else {
-                        updateChunk(chunkPosition);
+                        Chunk chunk = getChunk(chunkPosition);
+
+                        if (chunk.getIsUpdate()) {
+                            updateChunk(chunk);
+                        } else {
+                            Frustum frustum = camera.getFrustum();
+
+                            chunk.setIsRender(frustum.isIntersecting(chunk));
+                        }
                     }
                 }
             });
@@ -326,6 +330,12 @@ public class ChunkManager {
         }
     }
 
+    public void renderChunk(Chunk chunk) {
+        chunk.render(this.camera);
+
+        chunk.setIsRender(false);
+    }
+
     // Could simply change to priority queue instead of sorting in one go
     // Computationally slower for large list
     public void render() {
@@ -337,7 +347,9 @@ public class ChunkManager {
             if (this.isChunkActive(chunkPosition)) {
                 Chunk chunk = this.getChunk(chunkPosition);
 
-                chunk.render(this.camera);
+                if (chunk.getIsRender()) {
+                    this.renderChunk(chunk);
+                }
             }
         }
 
