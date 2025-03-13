@@ -1,6 +1,5 @@
 package com.duckyshine.app.math.noise;
 
-import com.duckyshine.app.debug.Debug;
 import com.duckyshine.app.math.RandomNumber;
 
 public class Noise {
@@ -12,24 +11,19 @@ public class Noise {
 
     private static final double LACUNARITY = 2.0f;
 
-    // Default: 1,10
-    //
-    // Use lower freq with higher scale:
-    // Best settings:
-    // 0.5,20
-    private static final double FREQUENCY = 0.5f;
+    private static final double FREQUENCY = 0.01f;
 
-    private static final double SCALE = 20.0f;
+    private static final double SCALE = 48.0f;
 
     public static int getNoise2d(int x, int z) {
         return Noise.getNoise2d((double) x, (double) z);
     }
 
     public static int getNoise2d(double x, double z) {
-        double totalNoise = 0.0f;
-        double totalAmplitude = 0.0f;
+        double totalNoise = 0.0d;
+        double totalAmplitude = 0.0d;
 
-        double amplitude = 1.0f;
+        double amplitude = 1.0d;
         double frequency = Noise.FREQUENCY;
 
         for (int i = 0; i < Noise.OCTAVES; i++) {
@@ -46,10 +40,37 @@ public class Noise {
 
         double normalisedNoise = totalNoise / totalAmplitude;
 
-        int y = (int) Math.ceil((normalisedNoise + 1.0f) * 0.5f * SCALE);
-
-        return y;
+        return (int) Math.ceil((normalisedNoise + 1.0f) * 0.5f * SCALE);
     }
+
+    // Second model
+    // public static int getNoise2d(double x, double z) {
+    // double amplitude = 32.0d;
+
+    // double frequency = 0.005d;
+
+    // double totalNoise = 0.0d;
+
+    // for (int i = 1; i <= 3; i++) {
+    // int offset = (1 << i);
+
+    // double currentAmplitude = amplitude * (1 / offset);
+    // double currentFrequency = frequency * offset;
+
+    // double noise = amplitude * Noise.getSimplexNoise2d(x * frequency, z *
+    // frequency);
+
+    // if ((i & 1) == 1) {
+    // noise += currentAmplitude;
+    // } else {
+    // noise -= currentAmplitude;
+    // }
+
+    // totalNoise += noise;
+    // }
+
+    // return (int) totalNoise;
+    // }
 
     private static double getSimplexNoise2d(double x, double z) {
         return SimplexNoise.noise2(Noise.SEED, x, z);

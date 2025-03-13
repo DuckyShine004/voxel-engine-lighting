@@ -33,6 +33,7 @@ public class Player {
 
     private final float RAY_DISTANCE = 8.0f;
 
+    // Debugging player aabb camera offsets
     // private final float CAMERA_OFFSET_X = 1.0f;
     // private final float CAMERA_OFFSET_Y = 2.0f;
     // private final float CAMERA_OFFSET_Z = -2.0f;
@@ -160,7 +161,7 @@ public class Player {
         }
 
         if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-            this.horizontalSpeedMultiplier = 2.0f;
+            this.horizontalSpeedMultiplier = 10.0f; // 2
         }
 
         if (velocity.length() != 0.0f) {
