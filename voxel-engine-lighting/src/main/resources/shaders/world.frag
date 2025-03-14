@@ -46,12 +46,20 @@ void main() {
     float ambientIntensity = 0.5f;
     vec3 ambient = ambientIntensity * vec3(1.0f);
 
-    vec3 lightDirection = vec3(0.8f, 1.0f, 0.7f);
+    vec3 lightDirection = vec3(0.8f, -1.0f, 0.7f);
     lightDirection = normalize(-lightDirection);
 
     float diffuseIntensity = max(dot(outNormal, lightDirection), 0.0f);
     vec3 diffuse = diffuseIntensity * vec3(1.0f);
 
+    float specularIntensity = 0.5f;
+    vec3 viewDirection = normalize(cameraPosition - outVertexPosition);
+    vec3 reflectionDirection = reflect(-lightDirection, outNormal);
+
+    float spec = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 32.0f);
+    vec3 specular = specularIntensity * spec * vec3(1.0f);
+
+    // discard specular
     vec3 lightColour = (ambient + diffuse) * textureColour.rgb;
 
     vec3 finalColour = mix(fogColour, lightColour, getExponentialFogFactor());
