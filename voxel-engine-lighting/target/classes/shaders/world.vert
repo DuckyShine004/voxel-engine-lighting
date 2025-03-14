@@ -26,7 +26,7 @@ const vec3 NORMALS[6] = vec3[6](
     );
 
 void main() {
-    gl_Position = projectionViewMatrix * vec4(vertexPosition, 1.0);
+    gl_Position = projectionViewMatrix * vec4(vertexPosition, 1.0f);
 
     outVertexPosition = vertexPosition;
 
@@ -36,5 +36,5 @@ void main() {
 
     outTextureCoordinate = textureCoordinate;
 
-    outVertexColour = vec4(1.0, 1.0, 1.0, 1.0);
+    outVertexColour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 };

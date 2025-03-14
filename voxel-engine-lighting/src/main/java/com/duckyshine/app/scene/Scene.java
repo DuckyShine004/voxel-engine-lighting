@@ -1,6 +1,7 @@
 package com.duckyshine.app.scene;
 
 import java.util.Map;
+
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
@@ -15,15 +16,17 @@ import com.duckyshine.app.physics.ray.RayResult;
 import com.duckyshine.app.asset.AssetPool;
 
 import com.duckyshine.app.camera.Camera;
-
+import com.duckyshine.app.camera.CameraType;
 import com.duckyshine.app.math.Axis;
 import com.duckyshine.app.model.Block;
 import com.duckyshine.app.shader.Shader;
 import com.duckyshine.app.shader.ShaderType;
 
 import com.duckyshine.app.debug.Debug;
+import com.duckyshine.app.gui.Crosshair;
 
-// Only two places where I need to change the constants, here and Chunk
+import static org.lwjgl.opengl.GL11.*;
+
 public class Scene {
     private Shader shader;
 
@@ -31,12 +34,16 @@ public class Scene {
 
     private ChunkManager chunkManager;
 
+    private Crosshair crosshair;
+
     public Scene() {
         this.player = new Player(0.0f, 20.0f, 0.0f);
 
         this.shader = AssetPool.getShader(ShaderType.WORLD.getName());
 
         this.chunkManager = new ChunkManager(this.player.getCamera());
+
+        this.crosshair = new Crosshair();
     }
 
     public Scene(Shader shader) {
@@ -128,14 +135,18 @@ public class Scene {
         this.chunkManager.update(this.player);
     }
 
-    public void setShader(ShaderType shaderType) {
+    public void setShader(ShaderType shaderType, CameraType cameraType) {
         Camera camera = this.player.getCamera();
 
         this.shader = AssetPool.getShader(shaderType.getName());
 
         this.shader.use();
 
-        this.shader.setMatrix4f("projectionViewMatrix", camera.getProjectionView());
+        if (cameraType == CameraType.PERSPECTIVE) {
+            this.shader.setMatrix4f("projectionViewMatrix", camera.getProjectionView());
+        } else {
+            this.shader.setMatrix4f("orthographicMatrix", camera.getOrthographic());
+        }
     }
 
     public void setFog() {
@@ -146,7 +157,7 @@ public class Scene {
     }
 
     public void render() {
-        this.setShader(ShaderType.WORLD);
+        this.setShader(ShaderType.WORLD, CameraType.PERSPECTIVE);
 
         this.setFog();
         this.shader.setVector3f("cameraPosition", this.getCamera().getPosition());
@@ -163,11 +174,18 @@ public class Scene {
         if (block != null) {
             AABB aabb = block.getAABB();
 
+            this.setShader(ShaderType.AABB, CameraType.PERSPECTIVE);
+
             aabb.loadBuffer();
-            this.setShader(ShaderType.AABB);
             aabb.render();
         }
 
+        glDisable(GL_DEPTH_TEST);
+        this.setShader(ShaderType.CROSSHAIR, CameraType.ORTHOGRAPHIC);
+
+        this.crosshair.loadBuffer();
+        this.crosshair.render();
+        glEnable(GL_DEPTH_TEST);
     }
 
     public void cleanup() {

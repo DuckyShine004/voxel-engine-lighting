@@ -1,13 +1,13 @@
 package com.duckyshine.app.physics;
 
-import static org.lwjgl.opengl.GL11.*;
-
 import org.joml.Vector3f;
 
 import com.duckyshine.app.buffer.AABBBuffer;
 import com.duckyshine.app.buffer.Buffer;
 import com.duckyshine.app.buffer.BufferData;
 import com.duckyshine.app.math.Axis;
+
+import static org.lwjgl.opengl.GL11.*;
 
 public class AABB {
     private final int[] INDICES = {
@@ -36,7 +36,7 @@ public class AABB {
     }
 
     public float[] getVertices() {
-        float[] vertices = {
+        return new float[] {
                 this.min.x, this.min.y, this.min.z,
                 this.max.x, this.min.y, this.min.z,
                 this.max.x, this.min.y, this.max.z,
@@ -46,8 +46,6 @@ public class AABB {
                 this.max.x, this.max.y, this.max.z,
                 this.min.x, this.max.y, this.max.z
         };
-
-        return vertices;
     }
 
     public AABB getOffset(float offset, Axis axis) {

@@ -9,6 +9,11 @@
       "key": "aabb",
       "vertexShaderPath": "shaders/aabb.vert",
       "fragmentShaderPath": "shaders/aabb.frag"
+    },
+    {
+      "key": "crosshair",
+      "vertexShaderPath": "shaders/crosshair.vert",
+      "fragmentShaderPath": "shaders/crosshair.frag"
     }
   ]
 }

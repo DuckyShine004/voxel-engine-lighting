@@ -3,12 +3,15 @@ com/duckyshine/app/asset/AssetLoader.class
 com/duckyshine/app/scene/Scene.class
 com/duckyshine/app/math/Vector3.class
 com/duckyshine/app/model/texture/Atlas.class
+com/duckyshine/app/gui/Crosshair.class
 com/duckyshine/app/sound/SoundPlayer.class
+com/duckyshine/app/buffer/LineBuffer2D.class
 com/duckyshine/app/scene/ChunkManager$1.class
 com/duckyshine/app/Main.class
 com/duckyshine/app/debug/Debug.class
 com/duckyshine/app/math/noise/Noise.class
 com/duckyshine/app/model/Block.class
+com/duckyshine/app/camera/CameraType.class
 com/duckyshine/app/math/Voxel.class
 com/duckyshine/app/buffer/AABBBuffer.class
 com/duckyshine/app/math/RandomNumber.class

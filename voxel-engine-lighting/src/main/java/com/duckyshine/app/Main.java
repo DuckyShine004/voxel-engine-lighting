@@ -58,7 +58,10 @@ public class Main {
     private void initialiseWindow() {
         Display display = Display.get();
 
-        this.window = glfwCreateWindow(display.getWidth(), display.getHeight(), "Greedy Meshing", NULL, NULL);
+        int width = display.getInitialWidth();
+        int height = display.getInitialHeight();
+
+        this.window = glfwCreateWindow(width, height, "Voxel Engine", NULL, NULL);
 
         if (this.window == NULL) {
             throw new RuntimeException("Failed to create the GLFW window");
@@ -107,7 +110,7 @@ public class Main {
         Atlas.setup(false);
 
         // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glLineWidth(2.0f);
+        glLineWidth(2.5f);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glEnable(GL_BLEND);
@@ -173,7 +176,11 @@ public class Main {
     private void frameBufferSizeCallback(long window, int width, int height) {
         Camera camera = this.scene.getCamera();
 
+        Display display = Display.get();
+
         glViewport(0, 0, width, height);
+
+        display.setResolution(width, height);
 
         camera.updateAspectRatio(width, height);
     }

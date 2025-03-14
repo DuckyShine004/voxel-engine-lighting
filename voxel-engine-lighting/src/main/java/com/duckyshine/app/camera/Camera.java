@@ -1,5 +1,7 @@
 package com.duckyshine.app.camera;
 
+import java.applet.Applet;
+
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -39,6 +41,8 @@ public class Camera {
     private Matrix4f projection;
     private Matrix4f projectionView;
 
+    private Matrix4f orthographic;
+
     private Frustum frustum;
 
     public Camera() {
@@ -74,6 +78,8 @@ public class Camera {
         this.projection = new Matrix4f();
         this.projectionView = new Matrix4f();
 
+        this.orthographic = new Matrix4f();
+
         this.frustum = new Frustum(this);
 
         this.initialiseAspectRatio();
@@ -86,11 +92,18 @@ public class Camera {
     private void initialiseAspectRatio() {
         Display display = Display.get();
 
-        this.aspectRatio = (float) display.getWidth() / display.getHeight();
+        float width = (float) display.getWidth();
+        float height = (float) display.getHeight();
+
+        this.aspectRatio = display.getAspectRatio();
+
+        this.orthographic.identity().ortho2D(0.0f, width, 0.0f, height);
     }
 
     public void updateAspectRatio(int width, int height) {
         this.aspectRatio = (float) width / height;
+
+        this.orthographic.identity().ortho2D(0.0f, width, 0.0f, height);
     }
 
     public void updateMatrices() {
@@ -161,6 +174,10 @@ public class Camera {
 
     public Matrix4f getProjectionView() {
         return this.projectionView;
+    }
+
+    public Matrix4f getOrthographic() {
+        return this.orthographic;
     }
 
     public float getNear() {

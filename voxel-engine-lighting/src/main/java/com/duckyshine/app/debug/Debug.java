@@ -4,6 +4,7 @@ import java.nio.file.Path;
 
 import java.util.Arrays;
 
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector3i;
 
@@ -26,6 +27,12 @@ public class Debug {
 
         if (object.getClass().isArray()) {
             return Debug.castObjectArrayToString(Object[].class, object);
+        }
+
+        if (object instanceof Vector2f) {
+            Vector2f vector = (Vector2f) object;
+
+            return "[" + vector.x + ", " + vector.y + "]";
         }
 
         if (object instanceof Vector3f) {

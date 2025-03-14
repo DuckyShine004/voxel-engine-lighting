@@ -11,6 +11,8 @@ import com.duckyshine.app.physics.AABB;
 public class Block {
     private final int FACES = 6;
 
+    private final float OFFSET = 0.025f;
+
     private final Vector3i position;
 
     private final Vector3i globalPosition;
@@ -85,11 +87,11 @@ public class Block {
         Vector3f position = new Vector3f(this.getGlobalPosition());
 
         return new AABB(
-                position.x,
-                position.y,
-                position.z,
-                position.x + 1.0f,
-                position.y + 1.0f,
-                position.z + 1.0f);
+                position.x - this.OFFSET,
+                position.y - this.OFFSET,
+                position.z - this.OFFSET,
+                position.x + 1.0f + this.OFFSET,
+                position.y + 1.0f + this.OFFSET,
+                position.z + 1.0f + this.OFFSET);
     }
 }
