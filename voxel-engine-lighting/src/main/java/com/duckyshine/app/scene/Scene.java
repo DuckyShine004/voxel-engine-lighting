@@ -17,7 +17,7 @@ import com.duckyshine.app.asset.AssetPool;
 import com.duckyshine.app.camera.Camera;
 
 import com.duckyshine.app.math.Axis;
-
+import com.duckyshine.app.model.Block;
 import com.duckyshine.app.shader.Shader;
 import com.duckyshine.app.shader.ShaderType;
 
@@ -153,11 +153,21 @@ public class Scene {
 
         this.chunkManager.render();
 
-        AABB aabb = this.player.getAABB();
+        Block block = this.player.getCurrentBlock();
 
-        aabb.loadBuffer();
-        this.setShader(ShaderType.AABB);
-        aabb.render();
+        // AABB aabb = this.player.getAABB();
+
+        // aabb.loadBuffer();
+        // this.setShader(ShaderType.AABB);
+        // aabb.render();
+        if (block != null) {
+            AABB aabb = block.getAABB();
+
+            aabb.loadBuffer();
+            this.setShader(ShaderType.AABB);
+            aabb.render();
+        }
+
     }
 
     public void cleanup() {

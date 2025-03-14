@@ -252,7 +252,6 @@ public class ChunkManager {
         chunk.setIsUpdate(false);
     }
 
-    // TODO: implement frustum culling to process in view chunks
     public void addSurroundingChunks(Player player) {
         int renderDistance = player.getRenderDistance();
 
@@ -283,7 +282,6 @@ public class ChunkManager {
         this.addSurroundingChunks(player);
 
         while (!this.chunkQueue.isEmpty()) {
-            // Cannot change
             final Vector3i chunkPosition = this.chunkQueue.poll();
 
             Future<?> task = this.threadPool.submit(new Runnable() {
@@ -319,7 +317,6 @@ public class ChunkManager {
         this.waitForAllTasksToComplete(tasks);
     }
 
-    // Join worker threads
     public void waitForAllTasksToComplete(List<Future<?>> tasks) {
         for (Future<?> task : tasks) {
             try {
@@ -336,11 +333,7 @@ public class ChunkManager {
         chunk.setIsRender(false);
     }
 
-    // Could simply change to priority queue instead of sorting in one go
-    // Computationally slower for large list
     public void render() {
-        // List<Chunk> sortedChunks = new ArrayList<>();
-
         while (!this.loadedChunks.isEmpty()) {
             Vector3i chunkPosition = this.loadedChunks.poll();
 
@@ -352,19 +345,6 @@ public class ChunkManager {
                 }
             }
         }
-
-        // Collections.sort(sortedChunks, (chunkA, chunkB) -> {
-        // Vector3f cameraPosition = this.camera.getPosition();
-
-        // float distanceA = Vector3.getDistance(chunkA.getCentre(), cameraPosition);
-        // float distanceB = Vector3.getDistance(chunkB.getCentre(), cameraPosition);
-
-        // return Float.compare(distanceB, distanceA);
-        // });
-
-        // for (Chunk chunk : sortedChunks) {
-        // chunk.render(this.camera);
-        // }
     }
 
     public void cleanup() {

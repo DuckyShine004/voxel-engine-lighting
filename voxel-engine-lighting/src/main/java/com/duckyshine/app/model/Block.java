@@ -2,9 +2,11 @@ package com.duckyshine.app.model;
 
 import java.util.Arrays;
 
+import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import com.duckyshine.app.math.Direction;
+import com.duckyshine.app.physics.AABB;
 
 public class Block {
     private final int FACES = 6;
@@ -77,5 +79,17 @@ public class Block {
 
     public boolean isTransparent() {
         return this.blockType.isTransparent();
+    }
+
+    public AABB getAABB() {
+        Vector3f position = new Vector3f(this.getGlobalPosition());
+
+        return new AABB(
+                position.x,
+                position.y,
+                position.z,
+                position.x + 1.0f,
+                position.y + 1.0f,
+                position.z + 1.0f);
     }
 }

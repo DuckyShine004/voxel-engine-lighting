@@ -5,8 +5,10 @@ import org.joml.Vector3f;
 import org.joml.Vector3i;
 
 import com.duckyshine.app.math.Vector3;
+import com.duckyshine.app.math.Voxel;
 import com.duckyshine.app.model.Block;
 import com.duckyshine.app.model.BlockType;
+import com.duckyshine.app.model.Chunk;
 import com.duckyshine.app.camera.Camera;
 
 import com.duckyshine.app.physics.AABB;
@@ -59,6 +61,10 @@ public class Player {
 
     private Camera camera;
 
+    private RayResult rayResult;
+
+    private Block currentBlock;
+
     public Player() {
         this.position = new Vector3f();
 
@@ -93,6 +99,10 @@ public class Player {
                 this.position.x + this.WIDTH / 2.0f,
                 this.position.y + this.HEIGHT,
                 this.position.z + this.DEPTH / 2.0f);
+
+        this.rayResult = null;
+
+        this.currentBlock = null;
     }
 
     public void setIsGrounded(boolean isGrounded) {
@@ -220,8 +230,43 @@ public class Player {
     }
 
     public void update(long window, Scene scene) {
+        this.updateRayResult(scene);
+        this.updateCurrentBlock(scene);
         this.addBlock(window, scene);
         this.removeBlock(window, scene);
+    }
+
+    public void updateRayResult(Scene scene) {
+        Vector3f origin = this.camera.getPosition();
+        Vector3f direction = this.camera.getFront();
+
+        Ray ray = new Ray(origin, direction, this.RAY_DISTANCE);
+
+        this.rayResult = ray.cast(scene);
+    }
+
+    public void updateCurrentBlock(Scene scene) {
+        if (this.rayResult == null) {
+            return;
+        }
+
+        ChunkManager chunkManager = scene.getChunkManager();
+
+        this.currentBlock = null;
+
+        if (this.rayResult.getIsIntersect()) {
+            Vector3f position = this.rayResult.getPosition();
+
+            Chunk chunk = chunkManager.getChunkFromGlobalPosition(position);
+
+            if (chunk == null) {
+                return;
+            }
+
+            Vector3i blockPosition = Voxel.getBlockPositionFromGlobalPosition(position);
+
+            this.currentBlock = chunk.getBlock(blockPosition);
+        }
     }
 
     public void addBlock(long window, Scene scene) {
@@ -239,17 +284,14 @@ public class Player {
     }
 
     public void addBlock(Scene scene) {
-        Vector3f origin = this.camera.getPosition();
-        Vector3f direction = this.camera.getFront();
-
-        Ray ray = new Ray(origin, direction, this.RAY_DISTANCE);
-
-        RayResult rayResult = ray.cast(scene);
+        if (this.rayResult == null) {
+            return;
+        }
 
         ChunkManager chunkManager = scene.getChunkManager();
 
-        if (rayResult.getIsIntersect()) {
-            chunkManager.addBlock(rayResult);
+        if (this.rayResult.getIsIntersect()) {
+            chunkManager.addBlock(this.rayResult);
         }
     }
 
@@ -268,17 +310,14 @@ public class Player {
     }
 
     public void removeBlock(Scene scene) {
-        Vector3f origin = this.camera.getPosition();
-        Vector3f direction = this.camera.getFront();
-
-        Ray ray = new Ray(origin, direction, this.RAY_DISTANCE);
-
-        RayResult rayResult = ray.cast(scene);
+        if (this.rayResult == null) {
+            return;
+        }
 
         ChunkManager chunkManager = scene.getChunkManager();
 
         if (rayResult.getIsIntersect()) {
-            chunkManager.removeBlock(rayResult.getPosition());
+            chunkManager.removeBlock(this.rayResult.getPosition());
         }
     }
 
@@ -324,5 +363,9 @@ public class Player {
 
     public int getRenderDistance() {
         return this.RENDER_DISTANCE;
+    }
+
+    public Block getCurrentBlock() {
+        return this.currentBlock;
     }
 }
