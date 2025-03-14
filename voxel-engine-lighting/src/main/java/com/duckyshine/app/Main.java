@@ -10,7 +10,7 @@ import com.duckyshine.app.camera.Camera;
 import com.duckyshine.app.display.Display;
 
 import com.duckyshine.app.model.texture.Atlas;
-
+import com.duckyshine.app.physics.controller.Player;
 import com.duckyshine.app.scene.Scene;
 
 import com.duckyshine.app.sound.SoundPlayer;
@@ -29,6 +29,7 @@ import static org.lwjgl.system.MemoryUtil.*;
 
 public class Main {
     private int frames;
+    private int scrolls;
 
     private long window;
 
@@ -77,6 +78,8 @@ public class Main {
     private void initialiseCallbacks() {
         glfwSetKeyCallback(this.window, this::keyCallback);
 
+        glfwSetScrollCallback(this.window, this::scrollCallback);
+
         glfwSetCursorPosCallback(this.window, this::cursorPosCallback);
 
         glfwSetFramebufferSizeCallback(this.window, this::frameBufferSizeCallback);
@@ -121,6 +124,7 @@ public class Main {
 
     private void run() {
         this.frames = 0;
+        this.scrolls = 0;
 
         this.lastTime = 0.0f;
         this.fpsTimer = 0.0f;
@@ -193,6 +197,21 @@ public class Main {
         if (key == GLFW_KEY_E && action == GLFW_PRESS) {
             this.toggleCursorMode();
         }
+    }
+
+    private void scrollCallback(long window, double offsetX, double offsetY) {
+        Player player = this.scene.getPlayer();
+
+        // ++this.scrolls;
+
+        // Debug.debug(this.scrolls);
+
+        // if (this.scrolls > 5) {
+        // this.scrolls = 0;
+
+        // player.updateCurrentBlockType();
+        // }
+        player.updateCurrentBlockType();
     }
 
     private void toggleCursorMode() {

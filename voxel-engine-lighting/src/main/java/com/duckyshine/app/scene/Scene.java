@@ -199,4 +199,8 @@ public class Scene {
     public ChunkManager getChunkManager() {
         return this.chunkManager;
     }
+
+    public Player getPlayer() {
+        return this.player;
+    }
 }

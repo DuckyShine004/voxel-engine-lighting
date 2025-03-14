@@ -172,7 +172,7 @@ public class ChunkManager {
         return chunk.getBlock(blockPosition);
     }
 
-    public void addBlock(RayResult rayResult) {
+    public void addBlock(RayResult rayResult, BlockType blockType) {
         Vector3f axes = rayResult.getAxes();
         Vector3f position = rayResult.getPosition();
         Vector3f delta = position.add(axes, new Vector3f());
@@ -187,7 +187,7 @@ public class ChunkManager {
 
         Debug.debug(chunk.getPosition(), blockPosition, delta);
 
-        chunk.addBlock(blockPosition, BlockType.GRASS);
+        chunk.addBlock(blockPosition, blockType);
 
         chunk.setIsUpdate(true);
 
@@ -298,10 +298,6 @@ public class ChunkManager {
 
                         if (chunk.getIsUpdate()) {
                             updateChunk(chunk);
-                        } else {
-                            Frustum frustum = camera.getFrustum();
-
-                            chunk.setIsRender(frustum.isIntersecting(chunk));
                         }
                     }
                 }
@@ -334,13 +330,15 @@ public class ChunkManager {
     }
 
     public void render() {
+        Frustum frustum = this.camera.getFrustum();
+
         while (!this.loadedChunks.isEmpty()) {
             Vector3i chunkPosition = this.loadedChunks.poll();
 
             if (this.isChunkActive(chunkPosition)) {
                 Chunk chunk = this.getChunk(chunkPosition);
 
-                if (chunk.getIsRender()) {
+                if (frustum.isIntersecting(chunk)) {
                     this.renderChunk(chunk);
                 }
             }

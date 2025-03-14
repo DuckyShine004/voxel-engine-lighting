@@ -59,7 +59,8 @@ void main() {
     float spec = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 32.0f);
     vec3 specular = specularIntensity * spec * vec3(1.0f);
 
-    vec3 lightColour = (ambient + diffuse + specular) * textureColour.rgb;
+    // discard specular
+    vec3 lightColour = (ambient + diffuse) * textureColour.rgb;
 
     vec3 finalColour = mix(fogColour, lightColour, getExponentialFogFactor());
 

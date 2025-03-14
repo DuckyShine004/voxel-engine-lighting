@@ -65,6 +65,8 @@ public class Player {
 
     private Block currentBlock;
 
+    private BlockType currentBlockType;
+
     public Player() {
         this.position = new Vector3f();
 
@@ -103,6 +105,8 @@ public class Player {
         this.rayResult = null;
 
         this.currentBlock = null;
+
+        this.currentBlockType = BlockType.GRASS;
     }
 
     public void setIsGrounded(boolean isGrounded) {
@@ -269,6 +273,15 @@ public class Player {
         }
     }
 
+    public void updateCurrentBlockType() {
+        BlockType[] blockTypes = BlockType.values();
+
+        int size = blockTypes.length;
+        int index = this.currentBlockType.getIndex();
+
+        this.currentBlockType = blockTypes[(index + 1) % size];
+    }
+
     public void addBlock(long window, Scene scene) {
         int clickState = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT);
 
@@ -291,7 +304,7 @@ public class Player {
         ChunkManager chunkManager = scene.getChunkManager();
 
         if (this.rayResult.getIsIntersect()) {
-            chunkManager.addBlock(this.rayResult);
+            chunkManager.addBlock(this.rayResult, this.currentBlockType);
         }
     }
 
